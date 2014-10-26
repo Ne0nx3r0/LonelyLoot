@@ -55,7 +55,6 @@ public class LootBox {
             }
         });
         
-        // a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
         this.childrenTotalRarity = 0;
         
         Iterator<LootBox> it = this.children.iterator();
