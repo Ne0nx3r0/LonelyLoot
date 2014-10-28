@@ -2,6 +2,7 @@ package com.lonelymc.loot;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
@@ -39,6 +40,10 @@ public class LonelyLoot {
         parentBox.addChild(lb);
     }
     
+    public LootBox getSpecificLootBox(String node){
+        return this.lootBoxes.get(node);
+    }
+    
     public LootBox getRandomLootBox(String startingNode,double chanceHigherNode,int maxHigherNodes,int magicFindModifier){
         LootBox box = this.lootBoxes.get(startingNode);
         
@@ -66,19 +71,33 @@ public class LonelyLoot {
         
         while(box.hasChildren()){
             Iterator<LootBox> it = box.getChildren().iterator();
-
-            int roll = random.nextInt(box.getChildrenTotalRarity())+1;
+            
+            Map<LootBox,Integer> mfRarities = new HashMap<>();
+            
+            int rollMax = 0;
             
             while(it.hasNext()){
                 LootBox next = it.next();
                 
-                if(roll < next.getRarity() + magicFindModifier){
-                    box = next;
+                mfRarities.put(next,next.getRarity()+magicFindModifier);
+                
+                rollMax += next.getRarity() + magicFindModifier;
+            }
+
+            int roll = random.nextInt(rollMax);
+            int sum = 0;
+            
+            Iterator<Map.Entry<LootBox, Integer>> mfIt = mfRarities.entrySet().iterator();
+            
+            while(mfIt.hasNext()){
+                Map.Entry<LootBox, Integer> next = mfIt.next();
+                
+                sum += next.getValue();
+                
+                if(roll <= sum){
+                    box = next.getKey();
                     
                     break;
-                }
-                else {
-                    roll -= next.getRarity();
                 }
             }
         }

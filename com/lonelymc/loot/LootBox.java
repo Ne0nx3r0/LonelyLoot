@@ -51,7 +51,7 @@ public class LootBox {
         Collections.sort(this.children, new Comparator<LootBox>() {
             @Override
             public int compare(LootBox box1, LootBox box2) {
-                return box1.getRarity() - box2.getRarity();
+                return  box2.getRarity() - box1.getRarity();
             }
         });
         
